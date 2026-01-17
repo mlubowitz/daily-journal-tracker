@@ -1,0 +1,352 @@
+@import 'tailwindcss';
+
+/* Custom fonts */
+@font-face {
+  font-family: 'Caveat';
+  src: url('https://fonts.gstatic.com/s/caveat/v18/WnznHAc5bAfYB2QRah7pcpNvOx-pjfJ9eIGpY3xMlxo.woff2')
+    format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('https://fonts.gstatic.com/s/inter/v18/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hjp-Ek-_0ew.woff2')
+    format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* CSS Variables for the design system */
+@theme {
+  /* Cream palette */
+  --color-cream-50: #fffdfb;
+  --color-cream-100: #fbf7f0;
+  --color-cream-200: #f5ede0;
+  --color-cream-300: #ede3d0;
+  --color-cream-400: #e0d4be;
+  --color-cream-500: #d4c5ac;
+
+  /* Ink/text colors */
+  --color-ink-light: #6b5d4f;
+  --color-ink: #2c2416;
+  --color-ink-dark: #1a1a1a;
+
+  /* Line colors for journal lines */
+  --color-line: #e8dcc8;
+  --color-line-dark: #d4c5ac;
+
+  /* Mood colors */
+  --color-mood-1: #ef4444;
+  --color-mood-2: #f97316;
+  --color-mood-3: #eab308;
+  --color-mood-4: #84cc16;
+  --color-mood-5: #22c55e;
+
+  /* Habit colors */
+  --color-habit-workout: #4caf50;
+  --color-habit-drink: #ff9800;
+  --color-habit-smoke: #f44336;
+  --color-habit-read: #2196f3;
+  --color-habit-lsat: #9c27b0;
+
+  /* Accent colors */
+  --color-accent: #4a5568;
+  --color-accent-light: #718096;
+
+  /* Font families */
+  --font-handwriting: 'Caveat', cursive;
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  /* Shadows */
+  --shadow-paper: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-paper-hover: 0 4px 6px rgba(0, 0, 0, 0.1),
+    0 2px 4px rgba(0, 0, 0, 0.06);
+  --shadow-notebook: 2px 2px 8px rgba(44, 36, 22, 0.15);
+
+  /* Animations */
+  --animate-fade-in: fade-in 0.3s ease-out;
+  --animate-slide-in: slide-in 0.3s ease-out;
+  --animate-scale-in: scale-in 0.2s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Base styles */
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-cream-100);
+    color: var(--color-ink);
+    min-height: 100vh;
+  }
+
+  /* Handwriting style headers */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-handwriting);
+  }
+}
+
+/* Component classes */
+@layer components {
+  /* Paper-like card styling */
+  .journal-paper {
+    background-color: var(--color-cream-50);
+    box-shadow: var(--shadow-paper);
+    border-radius: 0.5rem;
+    position: relative;
+  }
+
+  .journal-paper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.015;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .journal-paper:hover {
+    box-shadow: var(--shadow-paper-hover);
+  }
+
+  /* Lined paper effect */
+  .journal-lines {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 31px,
+      var(--color-line) 31px,
+      var(--color-line) 32px
+    );
+    background-position: 0 8px;
+    line-height: 32px;
+  }
+
+  /* Double line for header areas */
+  .journal-double-line {
+    border-bottom: 1px solid var(--color-line);
+    box-shadow: 0 2px 0 var(--color-line);
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+  }
+
+  /* Spiral binding dots */
+  .spiral-binding {
+    position: relative;
+  }
+
+  .spiral-binding::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 24px;
+    background-image: radial-gradient(
+      circle,
+      var(--color-line-dark) 4px,
+      transparent 4px
+    );
+    background-size: 24px 24px;
+    background-position: 0 12px;
+  }
+
+  /* Tab styling for month navigation */
+  .notebook-tab {
+    position: relative;
+    padding: 0.5rem 1rem;
+    background-color: var(--color-cream-200);
+    border-radius: 0 0.5rem 0.5rem 0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  .notebook-tab:hover {
+    background-color: var(--color-cream-300);
+    transform: translateX(4px);
+  }
+
+  .notebook-tab.active {
+    background-color: var(--color-cream-50);
+    box-shadow: var(--shadow-notebook);
+    transform: translateX(8px);
+    z-index: 10;
+  }
+
+  /* Checkbox styling for habits */
+  .habit-checkbox {
+    appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid var(--color-line-dark);
+    border-radius: 0.25rem;
+    background-color: var(--color-cream-50);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+
+  .habit-checkbox:checked {
+    background-color: var(--color-habit-workout);
+    border-color: var(--color-habit-workout);
+  }
+
+  .habit-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+
+  .habit-checkbox:focus {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  /* Mood button styling */
+  .mood-button {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    background-color: var(--color-cream-200);
+    cursor: pointer;
+  }
+
+  .mood-button:hover {
+    transform: scale(1.1);
+    background-color: var(--color-cream-300);
+  }
+
+  .mood-button.selected {
+    border-color: var(--color-ink);
+    transform: scale(1.15);
+    box-shadow: var(--shadow-paper-hover);
+  }
+
+  /* Input styling */
+  .journal-input {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid var(--color-line);
+    padding: 0.5rem 0;
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    width: 100%;
+    transition: border-color 0.2s ease;
+  }
+
+  .journal-input:focus {
+    outline: none;
+    border-bottom-color: var(--color-accent);
+  }
+
+  .journal-input::placeholder {
+    color: var(--color-ink-light);
+    opacity: 0.6;
+  }
+
+  /* Textarea with lines */
+  .journal-textarea {
+    background-color: transparent;
+    border: none;
+    resize: none;
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    width: 100%;
+    line-height: 32px;
+    padding: 0;
+  }
+
+  .journal-textarea:focus {
+    outline: none;
+  }
+
+  .journal-textarea::placeholder {
+    color: var(--color-ink-light);
+    opacity: 0.6;
+  }
+}
+
+/* Utility classes */
+@layer utilities {
+  .font-handwriting {
+    font-family: var(--font-handwriting);
+  }
+
+  .text-ink {
+    color: var(--color-ink);
+  }
+
+  .text-ink-light {
+    color: var(--color-ink-light);
+  }
+
+  .bg-cream {
+    background-color: var(--color-cream-100);
+  }
+
+  .bg-paper {
+    background-color: var(--color-cream-50);
+  }
+
+  .shadow-paper {
+    box-shadow: var(--shadow-paper);
+  }
+
+  .shadow-notebook {
+    box-shadow: var(--shadow-notebook);
+  }
+}
