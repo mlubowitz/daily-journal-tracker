@@ -5,6 +5,7 @@ import { AppShell } from '@/components/layout';
 import { lazy, Suspense } from 'react';
 
 const JournalPage = lazy(() => import('@/pages/JournalPage'));
+const CalendarPage = lazy(() => import('@/pages/CalendarPage'));
 const StatsPage = lazy(() => import('@/pages/StatsPage'));
 const ReflectionsPage = lazy(() => import('@/pages/ReflectionsPage'));
 const SettingsPage = lazy(() => import('@/pages/SettingsPage'));
@@ -39,10 +40,23 @@ export const router = createBrowserRouter([
         ),
       },
       {
+        // Redirect old journal/:date URLs to calendar/:date
         path: 'journal/:date',
+        element: <Navigate to="/calendar" replace />,
+      },
+      {
+        path: 'calendar',
         element: (
           <SuspenseWrapper>
-            <JournalPage />
+            <CalendarPage />
+          </SuspenseWrapper>
+        ),
+      },
+      {
+        path: 'calendar/:date',
+        element: (
+          <SuspenseWrapper>
+            <CalendarPage />
           </SuspenseWrapper>
         ),
       },

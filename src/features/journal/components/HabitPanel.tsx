@@ -1,15 +1,18 @@
 import { Clock } from 'lucide-react';
 import { Card, Input } from '@/components/ui';
+import { SleepTracker } from '@/components/common';
 import { HabitCheckbox } from './HabitCheckbox';
 import { HABIT_KEYS, type HabitKey } from '@/types/enums';
-import type { Habits } from '@/types/models';
+import type { Habits, SleepData } from '@/types/models';
 
 interface HabitPanelProps {
   habits: Habits;
   onChange: (habits: Habits) => void;
+  sleep: SleepData;
+  onSleepChange: (sleep: SleepData) => void;
 }
 
-export function HabitPanel({ habits, onChange }: HabitPanelProps) {
+export function HabitPanel({ habits, onChange, sleep, onSleepChange }: HabitPanelProps) {
   const handleHabitChange = (key: HabitKey, checked: boolean) => {
     onChange({
       ...habits,
@@ -70,7 +73,7 @@ export function HabitPanel({ habits, onChange }: HabitPanelProps) {
               type="number"
               min="0"
               max="24"
-              value={hours}
+              value={hours || ''}
               onChange={(e) => handleHoursChange(parseInt(e.target.value) || 0)}
               className="w-16 text-center"
               placeholder="0"
@@ -83,7 +86,7 @@ export function HabitPanel({ habits, onChange }: HabitPanelProps) {
               type="number"
               min="0"
               max="59"
-              value={minutes}
+              value={minutes || ''}
               onChange={(e) => handleMinutesChange(parseInt(e.target.value) || 0)}
               className="w-16 text-center"
               placeholder="0"
@@ -91,6 +94,11 @@ export function HabitPanel({ habits, onChange }: HabitPanelProps) {
             <span className="text-sm text-[var(--color-ink-light)]">min</span>
           </div>
         </div>
+      </div>
+
+      {/* Sleep tracker */}
+      <div className="border-t border-[var(--color-line)] pt-4">
+        <SleepTracker sleep={sleep} onChange={onSleepChange} />
       </div>
     </Card>
   );

@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import { Save, Loader2 } from 'lucide-react';
 import { Card } from '@/components/ui';
-import { MoodSelector, SleepTracker } from '@/components/common';
+import { MoodSelector } from '@/components/common';
 import { DayHighlight } from './DayHighlight';
 import { JournalText } from './JournalText';
 import { HabitPanel } from './HabitPanel';
@@ -66,16 +66,11 @@ export function JournalEntry({
               onChange={(highlight) => onChange({ highlight })}
             />
 
-            {/* Mood & Sleep row */}
-            <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
+            {/* Mood */}
+            <div className="mt-6">
               <MoodSelector
                 value={entry.mood}
                 onChange={(mood) => onChange({ mood })}
-                showLabels
-              />
-              <SleepTracker
-                sleep={entry.sleep}
-                onChange={(sleep) => onChange({ sleep })}
               />
             </div>
 
@@ -94,6 +89,8 @@ export function JournalEntry({
           <HabitPanel
             habits={entry.habits}
             onChange={(habits) => onChange({ habits })}
+            sleep={entry.sleep}
+            onSleepChange={(sleep) => onChange({ sleep })}
           />
         </div>
       </div>

@@ -1,28 +1,38 @@
-import { useMemo } from 'react';
-import { format, startOfYear, eachMonthOfInterval, endOfYear, isSameMonth } from 'date-fns';
-import { BookOpen, BarChart3, Target, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState } from 'react';
+import { format } from 'date-fns';
+import { BookOpen, Calendar, BarChart3, Target, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useCalendarStore, useUIStore } from '@/store';
 import { cn } from '@/utils/cn';
-import { Button } from '@/components/ui';
+import { Button, Card } from '@/components/ui';
+import { DayGrid, MonthHeader, useCalendar } from '@/features/calendar';
+import { LoadingSpinner } from '@/components/common';
 
 export function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { viewingMonth, setViewingMonth } = useCalendarStore();
+  const {
+    selectedDate,
+    viewingMonth,
+    goToPreviousMonth,
+    goToNextMonth,
+    goToToday,
+  } = useCalendarStore();
   const { isSidebarCollapsed, setSidebarCollapsed } = useUIStore();
+  const [isCalendarHovered, setIsCalendarHovered] = useState(false);
 
-  const currentYear = viewingMonth.getFullYear();
+  const { calendarDays, entriesMap, isLoading: calendarLoading } =
+    useCalendar(viewingMonth);
 
-  const months = useMemo(() => {
-    return eachMonthOfInterval({
-      start: startOfYear(viewingMonth),
-      end: endOfYear(viewingMonth),
-    });
-  }, [viewingMonth]);
+  const handleDaySelect = (date: Date) => {
+    const dateString = format(date, 'yyyy-MM-dd');
+    navigate(`/calendar/${dateString}`);
+    setIsCalendarHovered(false);
+  };
 
   const navItems = [
     { path: '/journal', icon: BookOpen, label: 'Journal' },
+    { path: '/calendar', icon: Calendar, label: 'Calendar', hasHover: true },
     { path: '/stats', icon: BarChart3, label: 'Statistics' },
     { path: '/reflections', icon: Target, label: 'Reflections' },
   ];
@@ -59,78 +69,67 @@ export function Sidebar() {
       <nav className="flex flex-col gap-1 p-2">
         {navItems.map((item) => {
           const isActive = location.pathname.startsWith(item.path);
+          const isCalendarItem = item.path === '/calendar';
+
           return (
-            <button
+            <div
               key={item.path}
-              onClick={() => navigate(item.path)}
-              className={cn(
-                'flex items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors',
-                isActive
-                  ? 'bg-[var(--color-cream-50)] text-[var(--color-ink)] shadow-paper'
-                  : 'text-[var(--color-ink-light)] hover:bg-[var(--color-cream-300)]'
-              )}
+              className="relative"
+              onMouseEnter={() => isCalendarItem && setIsCalendarHovered(true)}
+              onMouseLeave={() => isCalendarItem && setIsCalendarHovered(false)}
             >
-              <item.icon className="h-5 w-5 flex-shrink-0" />
-              {!isSidebarCollapsed && (
-                <span className="text-sm font-medium">{item.label}</span>
+              <button
+                onClick={() => navigate(item.path)}
+                className={cn(
+                  'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors',
+                  isActive
+                    ? 'bg-[var(--color-cream-50)] text-[var(--color-ink)] shadow-paper'
+                    : 'text-[var(--color-ink-light)] hover:bg-[var(--color-cream-300)]'
+                )}
+              >
+                <item.icon className="h-5 w-5 flex-shrink-0" />
+                {!isSidebarCollapsed && (
+                  <span className="text-sm font-medium">{item.label}</span>
+                )}
+              </button>
+
+              {/* Calendar hover popup - only show when not on calendar page */}
+              {isCalendarItem && isCalendarHovered && !isActive && (
+                <div className="absolute left-full top-0 z-50 pl-2">
+                  <Card variant="paper" padding="md" className="w-72 shadow-lg">
+                    <MonthHeader
+                      month={viewingMonth}
+                      onPreviousMonth={goToPreviousMonth}
+                      onNextMonth={goToNextMonth}
+                      onToday={goToToday}
+                    />
+                    <div className="mt-3">
+                      {calendarLoading ? (
+                        <LoadingSpinner />
+                      ) : (
+                        <DayGrid
+                          days={calendarDays}
+                          entriesMap={entriesMap}
+                          currentMonth={viewingMonth}
+                          selectedDate={selectedDate}
+                          onDaySelect={handleDaySelect}
+                          highlightEmpty
+                        />
+                      )}
+                    </div>
+                    <p className="mt-3 text-center text-xs text-[var(--color-ink-light)]">
+                      Click a day to view entry
+                    </p>
+                  </Card>
+                </div>
               )}
-            </button>
+            </div>
           );
         })}
       </nav>
 
-      {/* Month tabs */}
-      {!isSidebarCollapsed && (
-        <div className="flex flex-1 flex-col overflow-hidden">
-          {/* Year selector */}
-          <div className="flex items-center justify-between border-t border-[var(--color-line)] px-4 py-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                const prevYear = new Date(currentYear - 1, viewingMonth.getMonth());
-                setViewingMonth(prevYear);
-              }}
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <span className="font-handwriting text-lg text-[var(--color-ink)]">
-              {currentYear}
-            </span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                const nextYear = new Date(currentYear + 1, viewingMonth.getMonth());
-                setViewingMonth(nextYear);
-              }}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {/* Month list */}
-          <div className="flex-1 overflow-y-auto px-2 pb-4">
-            <div className="flex flex-col gap-1">
-              {months.map((month) => {
-                const isActive = isSameMonth(month, viewingMonth);
-                return (
-                  <button
-                    key={month.toISOString()}
-                    onClick={() => setViewingMonth(month)}
-                    className={cn(
-                      'notebook-tab text-left text-sm',
-                      isActive && 'active'
-                    )}
-                  >
-                    {format(month, 'MMMM')}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Spacer */}
+      <div className="flex-1" />
     </aside>
   );
 }

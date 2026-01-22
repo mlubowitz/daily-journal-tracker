@@ -14,8 +14,8 @@ export interface SleepData {
   quality: 1 | 2 | 3 | 4 | 5; // 1=poor, 5=excellent
 }
 
-// Mood type
-export type MoodValue = 1 | 2 | 3 | 4 | 5;
+// Mood type (null = not set)
+export type MoodValue = 1 | 2 | 3 | 4 | 5 | null;
 
 // Main daily entry
 export interface DayEntry {
@@ -92,13 +92,13 @@ export const createDefaultHabits = (): Habits => ({
 });
 
 export const createDefaultSleep = (): SleepData => ({
-  hours: 7,
+  hours: 0,
   quality: 3,
 });
 
 export const createDefaultDayEntry = (date: string): Omit<DayEntry, 'id'> => ({
   date,
-  mood: 3,
+  mood: null,
   sleep: createDefaultSleep(),
   highlight: '',
   journalText: '',

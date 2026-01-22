@@ -6,7 +6,6 @@ interface MoodSelectorProps {
   value: MoodValue;
   onChange: (mood: MoodValue) => void;
   size?: 'sm' | 'md' | 'lg';
-  showLabels?: boolean;
 }
 
 const sizeStyles = {
@@ -15,14 +14,18 @@ const sizeStyles = {
   lg: 'w-12 h-12 text-2xl',
 };
 
-const moods: MoodValue[] = [1, 2, 3, 4, 5];
+const moods: (1 | 2 | 3 | 4 | 5)[] = [1, 2, 3, 4, 5];
 
 export function MoodSelector({
   value,
   onChange,
   size = 'md',
-  showLabels = false,
 }: MoodSelectorProps) {
+  const handleClick = (mood: 1 | 2 | 3 | 4 | 5) => {
+    // Toggle off if clicking the already selected mood
+    onChange(value === mood ? null : mood);
+  };
+
   return (
     <div className="flex flex-col gap-2">
       <span className="text-sm font-medium text-[var(--color-ink-light)]">
@@ -35,7 +38,7 @@ export function MoodSelector({
             <button
               key={mood}
               type="button"
-              onClick={() => onChange(mood)}
+              onClick={() => handleClick(mood)}
               className={cn(
                 'mood-button',
                 sizeStyles[size],
@@ -53,12 +56,6 @@ export function MoodSelector({
           );
         })}
       </div>
-      {showLabels && (
-        <div className="flex items-center justify-between text-xs text-[var(--color-ink-light)]">
-          <span>{MoodLabels[1]}</span>
-          <span>{MoodLabels[5]}</span>
-        </div>
-      )}
     </div>
   );
 }

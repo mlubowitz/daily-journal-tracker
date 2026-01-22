@@ -8,6 +8,7 @@ interface DayGridProps {
   currentMonth: Date;
   selectedDate: Date;
   onDaySelect: (date: Date) => void;
+  highlightEmpty?: boolean;
 }
 
 const WEEKDAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -18,6 +19,7 @@ export function DayGrid({
   currentMonth,
   selectedDate,
   onDaySelect,
+  highlightEmpty = false,
 }: DayGridProps) {
   return (
     <div className="flex flex-col gap-2">
@@ -47,6 +49,7 @@ export function DayGrid({
               currentMonth={currentMonth}
               selectedDate={selectedDate}
               onClick={() => onDaySelect(date)}
+              highlightEmpty={highlightEmpty}
             />
           );
         })}

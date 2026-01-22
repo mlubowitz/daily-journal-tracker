@@ -1,6 +1,7 @@
-import type { MoodValue } from './models';
+// Non-null mood values for lookup tables
+type MoodNumber = 1 | 2 | 3 | 4 | 5;
 
-export const MoodLabels: Record<MoodValue, string> = {
+export const MoodLabels: Record<MoodNumber, string> = {
   1: 'Terrible',
   2: 'Bad',
   3: 'Okay',
@@ -8,7 +9,7 @@ export const MoodLabels: Record<MoodValue, string> = {
   5: 'Great',
 };
 
-export const MoodEmojis: Record<MoodValue, string> = {
+export const MoodEmojis: Record<MoodNumber, string> = {
   1: '😢',
   2: '😕',
   3: '😐',
@@ -16,7 +17,7 @@ export const MoodEmojis: Record<MoodValue, string> = {
   5: '😄',
 };
 
-export const MoodColors: Record<MoodValue, string> = {
+export const MoodColors: Record<MoodNumber, string> = {
   1: '#EF4444', // Red
   2: '#F97316', // Orange
   3: '#EAB308', // Yellow

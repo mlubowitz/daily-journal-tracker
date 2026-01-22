@@ -9,6 +9,7 @@ interface DayCellProps {
   currentMonth: Date;
   selectedDate: Date;
   onClick: () => void;
+  highlightEmpty?: boolean;
 }
 
 export function DayCell({
@@ -17,11 +18,14 @@ export function DayCell({
   currentMonth,
   selectedDate,
   onClick,
+  highlightEmpty = false,
 }: DayCellProps) {
   const isCurrentMonth = isSameMonth(date, currentMonth);
   const isSelected = isSameDay(date, selectedDate);
   const isTodayDate = isToday(date);
   const hasEntry = !!entry;
+  const isPast = date < new Date() && !isTodayDate;
+  const showEmptyHighlight = highlightEmpty && isPast && !hasEntry && isCurrentMonth;
 
   return (
     <button
@@ -32,7 +36,8 @@ export function DayCell({
         'hover:bg-[var(--color-cream-200)]',
         !isCurrentMonth && 'opacity-40',
         isSelected && 'bg-[var(--color-cream-200)] ring-2 ring-[var(--color-accent)]',
-        isTodayDate && !isSelected && 'bg-[var(--color-cream-300)]'
+        isTodayDate && !isSelected && 'bg-[var(--color-cream-300)]',
+        showEmptyHighlight && 'bg-red-50 ring-1 ring-red-200'
       )}
     >
       {/* Date number */}
@@ -53,12 +58,14 @@ export function DayCell({
       {hasEntry && (
         <div className="mt-1 flex items-center gap-0.5">
           {/* Mood emoji */}
-          <span
-            className="text-xs"
-            style={{ color: MoodColors[entry.mood] }}
-          >
-            {MoodEmojis[entry.mood]}
-          </span>
+          {entry.mood !== null && (
+            <span
+              className="text-xs"
+              style={{ color: MoodColors[entry.mood] }}
+            >
+              {MoodEmojis[entry.mood]}
+            </span>
+          )}
 
           {/* Habit dots */}
           <div className="flex gap-0.5">
